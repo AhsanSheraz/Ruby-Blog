@@ -3,7 +3,21 @@ class PostsController < ApplicationController
 
   # GET /posts
   def index
-    @posts = Post.all
+    ####################################################################
+    #           Doc string for get posts method
+    ####################################################################
+    #   Add pagination here to optimize the performance of query.
+    # 
+    #   Default Value:
+    #     page will be 1
+    #     per_page limit will be 5
+    # 
+    #   You can also customise the default limit, using the url.
+    # 
+    #   URL: http://localhost:3000/posts?page=2&per_page=10
+    ####################################################################
+    
+    @posts = Post.page(page).per(per_page)
 
     render json: @posts
   end
