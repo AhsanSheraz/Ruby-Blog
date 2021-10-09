@@ -112,6 +112,48 @@ class PostsController < ApplicationController
     render json: {"message": @post}, status: :ok
   end
 
+  # GET /author/ips
+  def get_author_against_ip
+    ####################################################################
+    #           Doc string for get_author_against_ip method
+    ####################################################################
+    #   This method will return hash where: 
+    #     KEY: user_ip
+    #     VALUE(email of user): [email]
+    # 
+    #   URL: http://localhost:3000/author/ips
+    #     
+    #   Response:{
+    #     "192.168.0.1": [
+    #        "user1@example.com",
+    #        "user3@example.com",
+    #        "user2@example.com"
+    #      ],
+    #      "192.168.0.2": [
+    #          "user2@example.com"
+    #      ]
+    #   }
+    ####################################################################
+
+    @post = Post.select(:user_ip, :user_id).as_json(:except => :id)
+    author_against_ip = {}
+    author_cache = {}
+    for value in @post
+      if author_against_ip[value["user_ip"]]
+        if !author_against_ip[value["user_ip"]].include? author_cache[value["user_id"]]
+          author_against_ip[value["user_ip"]].append(author_cache[value["user_id"]])
+        end
+      else
+        if !author_cache[value["user_id"]]
+          author_cache[value["user_id"]] = User.where("id = #{value["user_id"]}").select(:email).as_json(:except => :id)[0]['email']
+        end
+
+        author_against_ip[value["user_ip"]] = [author_cache[value["user_id"]]]
+      end
+    end
+    render json: author_against_ip, status: :ok
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post

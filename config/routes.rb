@@ -9,4 +9,7 @@ Rails.application.routes.draw do
 
   # get top n posts by rating
   get 'top/posts', to: 'posts#top_posts_by_avg'
+
+  # get object of IP's against login authers
+  get 'author/ips', to: 'posts#get_author_against_ip'
 end
