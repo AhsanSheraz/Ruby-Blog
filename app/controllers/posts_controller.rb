@@ -80,6 +80,38 @@ class PostsController < ApplicationController
     @post.destroy
   end
 
+  # GET /top/posts
+  def top_posts_by_avg
+    ####################################################################
+    #           Doc string for top_posts_by_avg method
+    ####################################################################
+    #   This method will return top n post based on average of 
+    #   all ratings against a post, against login user.
+    # 
+    #   URL: http://localhost:3000/top/posts?showPosts=4
+    #     
+    #   Default Values:
+    #     showPosts = 5
+    #   
+    #   Response:[
+    #     {
+    #       "title": "Post Number postman",
+    #       "context": "This post is agains"
+    #     },
+    #     {
+    #       "title": "Post Number postman",
+    #       "context": "This post is agains"
+    #     }
+    #   ]
+    ####################################################################
+
+    if !params[:showPosts]
+      params[:showPosts] = 5
+    end
+    @post = Post.where("user_id=#{$session_user_id}").joins(:rating).group("posts.id","ratings.rate").having("(SUM(ratings.rate)/(COUNT(ratings.rate)*5))*5 > 3").order("ratings.rate": :desc).select(:title, :context).as_json(:except => :id).slice(0,params[:showPosts].to_i)
+    render json: {"message": @post}, status: :ok
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
@@ -91,3 +123,5 @@ class PostsController < ApplicationController
       params.require(:post).permit(:title, :context, :user_ip, :user_id)
     end
 end
+
+

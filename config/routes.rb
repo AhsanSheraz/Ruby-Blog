@@ -6,4 +6,7 @@ Rails.application.routes.draw do
 
   # login route that can access in order to receive a token
   post :login, controller: 'application'
+
+  # get top n posts by rating
+  get 'top/posts', to: 'posts#top_posts_by_avg'
 end
