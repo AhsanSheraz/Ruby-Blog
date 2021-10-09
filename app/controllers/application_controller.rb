@@ -22,14 +22,14 @@ class ApplicationController < ActionController::API
     #   }
     # 
     #   Response:{
-    #     "user_id": 3,
     #     "token": "ecf80f464777da5eee50f9dcaefcc1d9"
     #   }
     ####################################################################
 
     @user = User.find_by(email: params[:email])
     if @user && @user.password == params[:password]
-      render json: { user_id:@user.id, token: @user.auth_token }
+      $session_user_id = @user.id
+      render json: { token: @user.auth_token }
     else
       render json: { error: 'Incorrect credentials' }, status: 401
     end

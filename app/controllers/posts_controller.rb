@@ -29,10 +29,39 @@ class PostsController < ApplicationController
 
   # POST /posts
   def create
-    @post = Post.new(post_params)
+    ####################################################################
+    #           Doc string for creat post method
+    ####################################################################
+    #   This method will add post against a user.
+    #   NOTE: It will get user id from the session_used_id that we set,
+    #         at the time of login.
+    # 
+    #   URL: http://localhost:3000/posts
+    #     
+    #   Payload:{
+    #     "title": "Post Number postman",
+    #     "context": "This post is agains",
+    #     "user_ip": "192.168.1.100"
+    #   }
+    #   
+    #   Response:{
+    #     "post": {
+    #       "id": 6514,
+    #       "title": "Post Number postman",
+    #       "context": "This post is agains",
+    #       "created_at": "2021-10-09T15:56:54.078Z",
+    #       "rating": []
+    #     }
+    #   }
+    ####################################################################
 
-    if @post.save
-      render json: @post, status: :created, location: @post
+    
+    @post = Post.new(post_params)
+    @post.user_id = $session_user_id
+    if !post_params[:title] || !post_params[:context]
+      render json: {"message": "title and context both are required fields."}, status: :unprocessable_entity
+    elsif @post.save
+      render json: @post, status: :ok, location: @post
     else
       render json: @post.errors, status: :unprocessable_entity
     end
