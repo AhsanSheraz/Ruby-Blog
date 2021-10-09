@@ -137,7 +137,11 @@ class PostsController < ApplicationController
 
     @post = Post.select(:user_ip, :user_id).as_json(:except => :id)
     author_against_ip = {}
-    author_cache = {}
+
+    # FUTURE CHANGINGS: At the below line need to add proper caching algo
+    # REASON: Because due to large data it will consume alot of memory
+    author_cache = {} 
+    
     for value in @post
       if author_against_ip[value["user_ip"]]
         if !author_against_ip[value["user_ip"]].include? author_cache[value["user_id"]]
