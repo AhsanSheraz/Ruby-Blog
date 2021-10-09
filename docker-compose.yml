@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+  db:
+    container_name: postgresql
+    image: postgres
+    hostname: pg-container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ""
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    ports:
+      - 8191:5432
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      ruby_blog_network:
+        ipv4_address: 10.5.3.2
+    
+  pgadmin:
+    image: dpage/pgadmin4:4.13
+    volumes:
+      - pga4volume:/var/lib/pgadmin
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - 5454:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ahsan@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    restart: unless-stopped
+    networks:
+      ruby_blog_network:
+        ipv4_address: 10.5.3.3
+
+  blog-app:
+    container_name: blog-app
+    build:
+      context: ./
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - ./:/Rails-Docker
+    ports:
+      - "3000:3000"
+    environment:
+      BLOG_APP_DB: blog_app_production
+      BLOG_APP_USER: postgres
+      BLOG_APP_DATABASE_PASSWORD: ""
+      BLOG_APP_HOST: 10.5.3.2
+    depends_on:
+      - db
+    networks:
+      ruby_blog_network:
+        ipv4_address: 10.5.3.99
+
+volumes:
+  pgdata: {}
+  pga4volume: {}
+  
+networks:
+  ruby_blog_network:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.3.0/24
