@@ -49,8 +49,7 @@ class PostsController < ApplicationController
     #       "id": 6514,
     #       "title": "Post Number postman",
     #       "context": "This post is agains",
-    #       "created_at": "2021-10-09T15:56:54.078Z",
-    #       "rating": []
+    #       "created_at": "2021-10-09T15:56:54.078Z"
     #     }
     #   }
     ####################################################################
