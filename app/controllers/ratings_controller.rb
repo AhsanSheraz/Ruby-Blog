@@ -15,10 +15,38 @@ class RatingsController < ApplicationController
 
   # POST /ratings
   def create
+    ####################################################################
+    #           Doc string for post rating method
+    ####################################################################
+    #   This method will add rating against a post.
+    #   NOTE: you can add multiple rating against a post.
+    # 
+    #   URL: http://localhost:3000/ratings
+    #     
+    #   Payload:{
+    #     "rate": 3,
+    #     "post_id": 20
+    #   }
+    #   
+    #   Response:{
+    #     "average_rating": 3.3, 
+    #     "post_id": 20
+    #   }
+    ####################################################################
+    
     @rating = Rating.new(rating_params)
 
-    if @rating.save
-      render json: @rating, status: :created, location: @rating
+    if rating_params[:rate] < 1 || rating_params[:rate] > 5
+      render json: {"message": "value of rate should be from 1 to 5"}, status: :bad_request
+    elsif @rating.save
+
+      # Code to create average rating out of 5
+      @all_ratings = Rating.where("post_id=#{rating_params[:post_id]}")
+      total_count = @all_ratings.count * 5
+      sum_all_ratings = @all_ratings.pluck('SUM(rate)')
+      avg_rating = sum_all_ratings[0] / total_count.to_f * 5
+
+      render json: {"average_rating": avg_rating.round(1), "post_id": @rating.post_id}, status: :created, location: @rating
     else
       render json: @rating.errors, status: :unprocessable_entity
     end
