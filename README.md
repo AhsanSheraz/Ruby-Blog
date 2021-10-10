@@ -1,6 +1,6 @@
-# README
+# Restful API's for Blogging in ROR
 
-This is the Ruby web based application, have restfull API's for a Blog application.
+This is the Ruby web based application, have Restful API's for a Blog application.
 
 * **Pre-Req:** You should have docker & docker-compose install on your machine.
     * **To install Docker:** <a href='https://docs.docker.com/desktop/windows/install/'>Windows</a>, <a href='https://docs.docker.com/engine/install/ubuntu/'>Ubuntu</a>, <a href='https://docs.docker.com/desktop/mac/install/'>Mac</a>
