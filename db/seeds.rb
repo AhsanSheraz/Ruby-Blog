@@ -6,9 +6,12 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+
+# require "base64"
+
 # To create a 100 user records we need to define a loop to generate users in DB
 for i in 1..100
-    u1 = User.create(email: 'user'+i.to_s+'@example.com', password: 'password')
+    u1 = User.create(email: 'user'+i.to_s+'@example.com', password: Base64.encode64('password'))
 
     # Create 2000 posts against each user to make it 200k posts
     for j in 1..2000

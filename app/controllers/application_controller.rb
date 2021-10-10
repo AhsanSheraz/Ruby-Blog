@@ -27,7 +27,7 @@ class ApplicationController < ActionController::API
     ####################################################################
 
     @user = User.find_by(email: params[:email])
-    if @user && @user.password == params[:password]
+    if @user && Base64.decode64(@user.password) == params[:password]
       $session_user_id = @user.id
       render json: { token: @user.auth_token }
     else
